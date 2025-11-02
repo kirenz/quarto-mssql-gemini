@@ -8,8 +8,8 @@ format:
     theme: cosmo
 jupyter:
   kernelspec:
-    name: gradio-mssql-gemini
-    display_name: gradio-mssql-gemini
+    name: quarto-mssql-gemini
+    display_name: quarto-mssql-gemini
     language: python
 ---
 
