@@ -10,9 +10,14 @@ Render the extended PDF briefing while exporting charts with Altair for crisp ve
 ## Run it
 1. Confirm credentials in `.env`.
 2. From the project root:  
-   `uv run quarto render examples/pdf-briefing-extended-altair/pdf-briefing-extended-altair.qmd`
+
+```bash
+uv run quarto render examples/pdf-briefing-extended-altair/pdf-briefing-extended-altair.qmd
+```
+
 3. Check the refreshed PDF and PNG assets under `examples/pdf-briefing-extended-altair/outputs/`.
 
 ## Key files
+
 - `pdf-briefing-extended-altair.qmd` – Altair-first Quarto file.
 - `outputs/plots/` – exported chart images consumed by the PDF.

@@ -88,11 +88,15 @@ monthly_chart.save(str(output_dir / 'monthly_revenue.png'))
 print(f"![Monthly Revenue Chart]({get_image_path('monthly_revenue.png')})")
 
 # Prepare metrics for AI analysis
+peak_month_idx = summary['Revenue EUR'].idxmax()
+lowest_month_idx = summary['Revenue EUR'].idxmin()
+peak_month = summary.loc[peak_month_idx, 'Calendar Month']
+lowest_month = summary.loc[lowest_month_idx, 'Calendar Month']
 monthly_metrics = {
     'Total Revenue': f"€{summary['Revenue EUR'].sum():,.0f}",
     'Average Monthly Revenue': f"€{summary['Revenue EUR'].mean():,.0f}",
-    'Peak Month': f"{summary['Revenue EUR'].idxmax()} (€{summary['Revenue EUR'].max():,.0f})",
-    'Lowest Month': f"{summary['Revenue EUR'].idxmin()} (€{summary['Revenue EUR'].min():,.0f})"
+    'Peak Month': f"{peak_month} (€{summary.loc[peak_month_idx, 'Revenue EUR']:,.0f})",
+    'Lowest Month': f"{lowest_month} (€{summary.loc[lowest_month_idx, 'Revenue EUR']:,.0f})"
 }
 
 # Format metrics for the prompt

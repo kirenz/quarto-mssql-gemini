@@ -10,7 +10,11 @@ Create a short-form PDF briefing that highlights the current period's Germany sa
 ## Run it
 1. Confirm your environment is configured (database + Gemini credentials).
 2. From the repository root:  
-   `uv run quarto render examples/pdf-briefing/pdf-briefing.qmd`
+
+```bash
+uv run quarto render examples/pdf-briefing/pdf-briefing.qmd
+```
+
 3. Review `examples/pdf-briefing/outputs/pdf-briefing.pdf`.
 
 ## Key files
