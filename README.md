@@ -13,24 +13,26 @@ This project assumes you have already installed:
 
 ## Quick start
 
-1. Install [uv](https://github.com/astral-sh/uv), follow the [Quarto installation guide](https://quarto.org/docs/get-started/), and an ODBC driver for SQL Server.
+1. Follow the [Quarto installation guide](https://quarto.org/docs/get-started/), if you haven't already.
 
-2. Clone the toolkit:
+2. Clone this repository:
 ```bash
 git clone https://github.com/kirenz/quarto-mssql-gemini.git
 ```
 
-3. Enter the project folder:
+3. Change into the project directory:
 ```bash
 cd quarto-mssql-gemini
 ```
 
 4. Install dependencies:
+
 ```bash
 uv sync
 ```
 
 5. Copy the environment template and create your own `.env` file:
+
 
 ```bash
 cp .env.example .env
@@ -45,7 +47,7 @@ code .
 7. Edit `.env` to add MSSQL credentials and `GEMINI_API_KEY`.
 
 
-8. Open the [quick start guide](docs/quickstart.md) and follow the steps to render your first asset.
+8. Open the [quick start guide](docs/quickstart.md) and follow the steps to create your first asset.
 
 
 ## Directory highlights
