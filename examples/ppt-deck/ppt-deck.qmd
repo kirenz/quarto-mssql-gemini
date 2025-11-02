@@ -1,0 +1,190 @@
+---
+title: "German Sales Analysis"
+author: Mike Farmer
+date: today
+date-format: long
+format:
+  pptx:
+    reference-doc: ../../assets/ppt-template.pptx
+jupyter:
+  kernelspec:
+    name: gradio-mssql-gemini
+    display_name: gradio-mssql-gemini
+    language: python
+---
+
+```{python}
+#| echo: false
+import altair as alt
+import pandas as pd
+from pathlib import Path
+from quarto_mssql_gemini.ai.narrative import generate_sales_narrative
+from quarto_mssql_gemini.data_access import get_germany_sales_data
+
+# Create a dedicated outputs/plots folder next to this example
+output_dir = Path("outputs/plots")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+
+def get_image_path(filename: str) -> str:
+    return str(output_dir / filename)
+```
+
+```{python}
+#| echo: false
+# Get the data already filtered for Germany
+germany_sales = get_germany_sales_data().sort_values('Calendar DueDate').copy()
+```
+
+# Monthly Sales Analysis for Germany {.section}
+
+## Sales Performance Overview {.section}
+
+```{python}
+#| echo: false
+#| output: asis
+# Create a summary of key metrics
+summary = germany_sales.groupby('Calendar Month')[['Sales Amount', 'Revenue EUR', 'Gross Profit EUR']].sum().reset_index()
+
+# Create monthly revenue chart with Altair
+monthly_chart = alt.Chart(summary).mark_line(point=True).encode(
+    x=alt.X('Calendar Month:O', title='Month'),
+    y=alt.Y('Revenue EUR:Q', title='Revenue (EUR)'),
+    tooltip=['Calendar Month', 'Revenue EUR']
+).properties(
+    width=800,
+    height=400,
+    title='Monthly Revenue'
+)
+
+# Save the chart
+monthly_chart.save(get_image_path('monthly_revenue.png'))
+
+# Display the saved image using knitr
+from IPython.display import Image
+display(Image(filename=get_image_path('monthly_revenue.png')))
+
+# Prepare metrics for AI analysis
+monthly_metrics = {
+    'Total Revenue': f"€{summary['Revenue EUR'].sum():,.0f}",
+    'Average Monthly Revenue': f"€{summary['Revenue EUR'].mean():,.0f}",
+    'Peak Month': f"{summary['Revenue EUR'].idxmax()} (€{summary['Revenue EUR'].max():,.0f})"
+}
+
+# Format metrics for the prompt
+monthly_metrics_text = "\n".join(f"{k}: {v}" for k, v in monthly_metrics.items())
+
+print(f"\nAI Analysis:\n{generate_sales_narrative('Monthly sales performance trends in Germany', monthly_metrics_text)}")
+```
+
+## Regional Analysis {.section}
+
+```{python}
+#| echo: false
+#| output: asis
+# Analyze sales by region in Germany
+region_summary = germany_sales.groupby('Sales Region').agg({
+    'Sales Amount': 'sum',
+    'Revenue EUR': 'sum',
+    'Gross Profit EUR': 'sum'
+}).round(2)
+
+# Convert to more presentable format
+region_summary_styled = region_summary.style.format({
+    'Sales Amount': '{:,.0f}',
+    'Revenue EUR': '€{:,.0f}',
+    'Gross Profit EUR': '€{:,.0f}'
+})
+
+display(region_summary_styled)
+
+# Prepare metrics for AI analysis
+region_metrics = {
+    'Total Revenue by Region': region_summary['Revenue EUR'].to_dict(),
+    'Top Region': f"{region_summary['Revenue EUR'].idxmax()} (€{region_summary['Revenue EUR'].max():,.0f})",
+    'Total Profit by Region': region_summary['Gross Profit EUR'].to_dict()
+}
+
+# Format metrics for the prompt
+region_metrics_text = "\n".join(f"{k}: {v}" for k, v in region_metrics.items())
+
+# Generate AI description
+region_analysis = generate_sales_narrative(
+    "Regional sales performance across German territories",
+    region_metrics_text
+)
+
+# Regional analysis with Altair
+region_summary_df = region_summary.reset_index()
+
+# Create regional comparison chart
+region_chart = alt.Chart(region_summary_df).mark_bar().encode(
+    x=alt.X('Sales Region:N', title='Region', axis=alt.Axis(labelAngle=0)),
+    y=alt.Y('Revenue EUR:Q', title='Revenue (EUR)'),
+    tooltip=['Sales Region', 'Revenue EUR', 'Gross Profit EUR']
+).properties(
+    width=800,
+    height=400,
+    title='Revenue by Region'
+)
+
+# Save and display the chart
+region_chart.save(get_image_path('region_revenue.png'))
+display(Image(filename=get_image_path('region_revenue.png')))
+
+print(f"\nAI Analysis:\n{region_analysis}")
+```
+
+## Product Category Performance {.section}
+
+```{python}
+#| echo: false
+#| output: asis
+#| fig-align: center
+# Calculate product category summary
+product_summary = germany_sales.groupby('Product Category').agg({
+    'Sales Amount': 'sum',
+    'Revenue EUR': 'sum',
+    'Gross Profit EUR': 'sum'
+}).sort_values('Revenue EUR', ascending=False)
+
+# Prepare metrics for AI analysis
+product_metrics = {
+    'Top Category': f"{product_summary.index[0]} (€{product_summary['Revenue EUR'].max():,.0f})",
+    'Category Revenue Distribution': product_summary['Revenue EUR'].to_dict(),
+    'Category Profit Margins': (product_summary['Gross Profit EUR'] / product_summary['Revenue EUR']).to_dict()
+}
+
+# Format metrics for the prompt
+product_metrics_text = "\n".join(f"{k}: {v}" for k, v in product_metrics.items())
+
+# Generate AI description
+product_analysis = generate_sales_narrative(
+    "Product category performance analysis in Germany",
+    product_metrics_text
+)
+
+# Product category analysis with Altair
+product_summary_df = product_summary.reset_index()
+
+# Create product category chart
+product_chart = alt.Chart(product_summary_df).mark_bar().encode(
+    x=alt.X('Product Category:N', 
+            title='Product Category',
+            sort='-y', 
+            axis=alt.Axis(labelAngle=0)),
+    y=alt.Y('Revenue EUR:Q', 
+            title='Revenue (EUR)'),
+    tooltip=['Product Category', 'Revenue EUR', 'Gross Profit EUR']
+).properties(
+    width=800,
+    height=400,
+    title='Revenue by Product Category'
+)
+
+# Save and display the chart
+product_chart.save(get_image_path('product_revenue.png'))
+display(Image(filename=get_image_path('product_revenue.png')))
+
+print(f"\nAI Analysis:\n{product_analysis}")
+```

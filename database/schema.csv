@@ -1,0 +1,17 @@
+table,column
+data_dwh.DataSet_Monthly_Sales_and_Quota,Sales Organisation
+data_dwh.DataSet_Monthly_Sales_and_Quota,Sales Country
+data_dwh.DataSet_Monthly_Sales_and_Quota,Sales Region
+data_dwh.DataSet_Monthly_Sales_and_Quota,Sales City
+data_dwh.DataSet_Monthly_Sales_and_Quota,Product Line
+data_dwh.DataSet_Monthly_Sales_and_Quota,Product Category
+data_dwh.DataSet_Monthly_Sales_and_Quota,Calendar Year
+data_dwh.DataSet_Monthly_Sales_and_Quota,Calendar Quarter
+data_dwh.DataSet_Monthly_Sales_and_Quota,Calendar Month
+data_dwh.DataSet_Monthly_Sales_and_Quota,Calendar DueDate
+data_dwh.DataSet_Monthly_Sales_and_Quota,Sales Amount
+data_dwh.DataSet_Monthly_Sales_and_Quota,Revenue EUR
+data_dwh.DataSet_Monthly_Sales_and_Quota,Revenue Quota
+data_dwh.DataSet_Monthly_Sales_and_Quota,Gross Profit EUR
+data_dwh.DataSet_Monthly_Sales_and_Quota,Gross Profit Quota
+data_dwh.DataSet_Monthly_Sales_and_Quota,Discount EUR
